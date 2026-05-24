@@ -287,9 +287,10 @@
       height: 100%;
       text-align: center;
     }
+    /* --- IMAGEN MÁS GRANDE SOLO PARA "MY" (MARIE) --- */
     .single-profile img {
-      max-width: 250px;
-      width: 80%;
+      max-width: 320px;     /* Aumentado desde 250px para que sea un poco más grande */
+      width: 90%;           /* Porcentaje fluido, mantiene responsividad */
       border-radius: 12px;
       margin-bottom: 20px;
       border: 2px solid #7b4db9;
@@ -437,11 +438,11 @@
     <div class="kashima-container">
       <div class="buttons-layer">
         <button class="nav-button btn-1" onclick="openWindow('My', 'forno')"></button>
-        <button class="nav-button btn-2" onclick="openWindow('Jewels', 'gioielli')"></button>
-        <button class="nav-button btn-3" onclick="openWindow('Masks', 'maschere')"></button>
-        <button class="nav-button btn-4" onclick="openWindow('Incense', 'incensi')"></button>
+        <button class="nav-button btn-2" onclick="openWindow('Friends', 'gioielli')"></button>
+        <button class="nav-button btn-3" onclick="openWindow('Works', 'maschere')"></button>
+        <button class="nav-button btn-4" onclick="openWindow('Demos', 'incensi')"></button>
         <button class="nav-button btn-5" onclick="openWindow('Rituals', 'rituali')"></button>
-        <button class="nav-button btn-special" onclick="openWindow('Limited', 'altre_offerte')">LIMITED</button>
+        <button class="nav-button btn-special" onclick="openWindow('♪', 'altre_offerte')">LIMITED</button>
       </div>
 
       <div id="popupWindow" class="text-window">
@@ -525,28 +526,28 @@
         }
       ],
       'gioielli': [{
-          img: 'https://i.imgur.com/uEBhSVW.png',
-          text: 'Pendaglio - 50¥'
+          img: 'https://xatimg.com/image/hMgyJcnnDjSt.png',
+          text: '𝘌𝘯𝘵𝘰𝘯'
         },
         {
-          img: 'https://i.imgur.com/dKqQC2f.png',
-          text: 'Bracciale - 80¥'
+          img: 'https://xatimg.com/image/GVgzbSylcRum.png',
+          text: '𝙈𝙪𝙨𝙚'
         },
         {
-          img: 'https://i.imgur.com/PZUeDuD.png',
-          text: 'Perla 01 - 50¥'
+          img: 'https://xatimg.com/image/EgMaFiPrebcu.png',
+          text: 'ᏓᏋᏁ'
         },
         {
-          img: 'https://i.imgur.com/rdrh4Cg.png',
-          text: 'Perla 02 - 20¥'
+          img: 'https://xatimg.com/image/g2ALugZGYSuS.png',
+          text: 'Aasthi'
         },
         {
-          img: 'https://i.imgur.com/ssNcCGI.png',
-          text: 'Perla 03 - 20¥'
+          img: 'https://xatimg.com/image/x5eJzShuPFs5.png',
+          text: 'Lucy'
         },
         {
-          img: 'https://i.imgur.com/dI6CIOx.png',
-          text: 'Perla 04 - 20¥'
+          img: 'https://xatimg.com/image/qQuOdW7F8bke.png',
+          text: 'King'
         },
         {
           img: 'https://i.imgur.com/EK9V7kO.png',
@@ -689,7 +690,7 @@
         specialDiv.className = 'single-profile';
         // Usamos la misma imagen de Marie (la primera del array)
         const marieImg = galleryData['forno'][0].img;
-        // Texto descriptivo según la imagen proporcionada por el usuario
+        // Texto descriptivo según la imagen proporcionada por el usuario (vacío, sin añadir texto)
         const descriptionText = ``;
         specialDiv.innerHTML = `
   <img src="${marieImg}" alt="Marie">
@@ -698,8 +699,7 @@
   </div>
 `;
         imageGrid.appendChild(specialDiv);
-        // Aseguramos que se vea como bloque flexible (el grid sigue siendo grid, pero este div ocupará toda la celda)
-        // Para centrarlo bien, el grid tiene dos columnas, pero el div abarca ambas si usamos grid-column
+        // Aseguramos que se vea como bloque flexible (el grid sigue siendo grid, pero este div abarca ambas columnas)
         specialDiv.style.gridColumn = '1 / -1';
         return;
       }
