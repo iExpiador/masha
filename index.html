@@ -278,6 +278,37 @@
       display: none;
     }
 
+    /* Estilo especial para la sección "My" (cuadro centrado) */
+    .single-profile {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100%;
+      text-align: center;
+    }
+    .single-profile img {
+      max-width: 250px;
+      width: 80%;
+      border-radius: 12px;
+      margin-bottom: 20px;
+      border: 2px solid #7b4db9;
+      box-shadow: 0 0 15px rgba(123, 77, 185, 0.5);
+    }
+    .single-profile .description {
+      font-size: 15px;
+      line-height: 1.5;
+      color: #f0f0f0;
+      background: rgba(0,0,0,0.5);
+      padding: 12px 20px;
+      border-radius: 20px;
+      max-width: 90%;
+      white-space: pre-line;
+    }
+    .single-profile .description strong {
+      color: #7b4db9;
+    }
+
     /* REPRODUCTOR REPOSICIONADO: debajo de la imagen derecha */
     .music-player-container {
       margin-top: 20px;
@@ -442,7 +473,7 @@
     const galleryData = {
       'forno': [{
           img: 'https://xatimg.com/image/bkhKmAkcBjpQ.png',
-          text: ''
+          text: 'Marie'
         },
         {
           img: 'https://i.imgur.com/sr5Nzcl.png',
@@ -636,21 +667,52 @@
       const popupText = document.getElementById('popupText');
       windowEl.style.display = 'block';
       document.getElementById('popupTitle').innerText = title;
+      
+      // CASO ESPECIAL: Rituals (textarea)
       if (type === 'rituali') {
         imageGrid.style.display = 'none';
         popupText.style.display = 'block';
-      } else {
-        imageGrid.style.display = 'grid';
-        popupText.style.display = 'none';
-        const items = galleryData[type] || [];
-        imageGrid.innerHTML = '';
-        items.forEach(item => {
-          const div = document.createElement('div');
-          div.className = 'gallery-item';
-          div.innerHTML = `<img src="${item.img}"><p>${item.text}</p>`;
-          imageGrid.appendChild(div);
-        });
+        popupText.value = ''; // Limpiar por si acaso
+        return;
       }
+      
+      // Para todos los demás casos, mostramos la cuadrícula de imágenes
+      imageGrid.style.display = 'grid';
+      popupText.style.display = 'none';
+      
+      // MODIFICACIÓN PARA "My" (forno): mostramos un diseño centrado especial
+      if (type === 'forno') {
+        // Limpiamos el grid y mostramos el contenido personalizado
+        imageGrid.innerHTML = '';
+        // Creamos un contenedor especial
+        const specialDiv = document.createElement('div');
+        specialDiv.className = 'single-profile';
+        // Usamos la misma imagen de Marie (la primera del array)
+        const marieImg = galleryData['forno'][0].img;
+        // Texto descriptivo según la imagen proporcionada por el usuario
+        const descriptionText = ``;
+        specialDiv.innerHTML = `
+  <img src="${marieImg}" alt="Marie">
+  <div class="description">
+    ${descriptionText.replace(/\n/g, '<br>')}
+  </div>
+`;
+        imageGrid.appendChild(specialDiv);
+        // Aseguramos que se vea como bloque flexible (el grid sigue siendo grid, pero este div ocupará toda la celda)
+        // Para centrarlo bien, el grid tiene dos columnas, pero el div abarca ambas si usamos grid-column
+        specialDiv.style.gridColumn = '1 / -1';
+        return;
+      }
+      
+      // Resto de galerías (gioielli, maschere, incensi, altre_offerte)
+      let items = galleryData[type] || [];
+      imageGrid.innerHTML = '';
+      items.forEach(item => {
+        const div = document.createElement('div');
+        div.className = 'gallery-item';
+        div.innerHTML = `<img src="${item.img}"><p>${item.text}</p>`;
+        imageGrid.appendChild(div);
+      });
     }
 
     function closeWindow() {
