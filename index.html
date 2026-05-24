@@ -1,228 +1,662 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="it">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>MashaDollk ✦ Space</title>
-    <!-- Font Awesome 6 (iconos sutiles) -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Masha - Space</title>
+  <style>
+    :root {
+      /* --- CONFIGURACIÓN DE DIMENSIONES --- */
+      --btn-width: 290px;
+      --btn-height: 190px;
+      /* --- MUOVER Y ROTAR BOTONES --- */
+      --p1-x: -397px;
+      --p1-y: -280px;
+      --p1-r: -15deg;
+      --p2-x: -427px;
+      --p2-y: -195px;
+      --p2-r: -6deg;
+      --p3-x: -427px;
+      --p3-y: -95px;
+      --p3-r: 0deg;
+      --p4-x: -417px;
+      --p4-y: -5px;
+      --p4-r: 2deg;
+      --p5-x: -387px;
+      --p5-y: 85px;
+      --p5-r: 7deg;
+      /* --- MODIFICA MINI BOTÓN "SPECIAL" AQUÍ --- */
+      --p6-x: -225px;
+      /* Posicionado sobre KLIN */
+      --p6-y: -255px;
+      /* Altura sobre el abanico */
+      --p6-r: 22deg;
+      /* ROTACIÓN DEL BOTÓN SPECIAL */
+      --p6-width: 80px;
+      --p6-height: 35px;
+      --p6-font-size: 13px;
+    }
 
-        body {
-            /* Fondo suave, oscuro pero con tonos café-rosado, nada agresivo */
-            background: radial-gradient(circle at 50% 30%, #1e1826, #0e0b14);
-            font-family: 'Segoe UI', 'Poppins', 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 2rem;
-        }
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      background-color: #1a1a1a;
+      font-family: 'Segoe UI', sans-serif;
+    }
 
-        /* Contenedor principal: amplio, con cristal y borde rosa pálido */
-        .space-container {
-            max-width: 1100px;
-            width: 100%;
-            background: rgba(25, 20, 35, 0.55);
-            backdrop-filter: blur(16px);
-            border-radius: 3rem;
-            padding: 2rem 2rem 2rem 2rem;
-            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3), 0 0 0 1px rgba(255, 200, 230, 0.3), 0 0 25px rgba(255, 120, 180, 0.2);
-            transition: all 0.3s;
-            border: 1px solid rgba(255, 180, 210, 0.5);
-        }
+    .animated-background {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background: url('https://xatimg.com/image/U5aaY3dgCPVx.png') repeat;
+      background-size: 300px;
+      animation: moveOblique 40s linear infinite;
+      z-index: 1;
+    }
 
-        /* Header: avatar y nombre con degradado rosa */
-        .profile-header {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 1.8rem;
-            align-items: center;
-            margin-bottom: 2.2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 160, 200, 0.5);
-        }
+    .main-wrapper {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 2;
+      display: flex;
+      align-items: center;
+      gap: 40px;
+    }
 
-        .avatar-frame img {
-            width: 100px;
-            height: 100px;
-            object-fit: cover;
-            border-radius: 50%;
-            border: 2px solid #ffb7d2;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2), 0 0 0 3px rgba(255, 140, 180, 0.3);
-            background: #2a1e30;
-        }
+    .kashima-container {
+      position: relative;
+      width: 450px;
+      height: 450px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
 
-        .title-info h1 {
-            font-size: 2.8rem;
-            font-weight: 700;
-            background: linear-gradient(135deg, #FFB7D2, #FF85B3, #FF5E9E);
-            background-clip: text;
-            -webkit-background-clip: text;
-            color: transparent;
-            letter-spacing: -0.3px;
-            text-shadow: 0 2px 10px rgba(255, 100, 150, 0.2);
-        }
+    .buttons-layer {
+      position: absolute;
+      z-index: 25;
+      pointer-events: none;
+      width: 1px;
+      height: 1px;
+    }
 
-        .subtle-badge {
-            background: rgba(255, 200, 220, 0.2);
-            border-radius: 50px;
-            padding: 0.2rem 1rem;
-            font-size: 0.8rem;
-            display: inline-block;
-            margin-top: 0.5rem;
-            color: #ffe2f0;
-            border: 0.5px solid #ffb7d2;
-        }
+    .nav-button {
+      position: absolute;
+      width: var(--btn-width);
+      height: var(--btn-height);
+      background-size: contain;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-color: transparent;
+      border: none;
+      outline: none;
+      cursor: pointer;
+      opacity: 0;
+      pointer-events: auto;
+      transition: transform 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.1), opacity 0.3s;
+      transform: translate(-50%, -50%) scale(0.1);
+      left: 0;
+      top: 0;
+    }
 
-        /* ZONA CENTRAL: LA IMAGEN PRINCIPAL (ocupa el foco) */
-        .hero-image {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 2.2rem;
-            padding: 1rem;
-            margin: 1rem 0 2rem 0;
-            text-align: center;
-            border: 1px solid rgba(255, 170, 200, 0.6);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3), inset 0 0 20px rgba(255, 200, 220, 0.1);
-        }
+    .kashima-container:hover .nav-button {
+      opacity: 1;
+    }
 
-        .hero-image img {
-            max-width: 100%;
-            max-height: 550px;
-            width: auto;
-            border-radius: 1.6rem;
-            display: block;
-            margin: 0 auto;
-            box-shadow: 0 5px 18px rgba(0, 0, 0, 0.3);
-            transition: transform 0.2s;
-        }
+    .btn-1 {
+      background-image: url('https://i.imgur.com/TIIhvH9.png');
+    }
 
-        .hero-image img:hover {
-            transform: scale(1.01);
-        }
+    .kashima-container:hover .btn-1 {
+      transform: translate(var(--p1-x), var(--p1-y)) rotate(var(--p1-r)) scale(1);
+    }
 
-        /* Sección de redes sociales (botones finos, elegantes, sin colores estridentes) */
-        .social-section {
-            margin-top: 1rem;
-            text-align: center;
-        }
+    .btn-1:hover {
+      transform: translate(var(--p1-x), var(--p1-y)) rotate(var(--p1-r)) scale(1.1) !important;
+      filter: brightness(1.3) drop-shadow(0 0 15px #7b4db9);
+    }
 
-        .social-section h3 {
-            font-size: 1.3rem;
-            font-weight: 400;
-            margin-bottom: 1.3rem;
-            color: #ffcce5;
-            letter-spacing: 1px;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            border-bottom: 1px dashed #ff99c2;
-            padding-bottom: 5px;
-        }
+    .btn-2 {
+      background-image: url('https://i.imgur.com/mFQl0RE.png');
+    }
 
-        .social-buttons {
-            display: flex;
-            flex-wrap: wrap;
-            justify-content: center;
-            gap: 1rem;
-            margin-top: 0.8rem;
-        }
+    .kashima-container:hover .btn-2 {
+      transform: translate(var(--p2-x), var(--p2-y)) rotate(var(--p2-r)) scale(1);
+    }
 
-        .social-btn {
-            background: rgba(30, 20, 40, 0.6);
-            backdrop-filter: blur(5px);
-            border-radius: 50px;
-            padding: 0.7rem 1.4rem;
-            font-size: 1rem;
-            font-weight: 500;
-            color: #fff0f5;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.25s ease;
-            border: 1px solid #ffb7d2;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
-        }
+    .btn-2:hover {
+      transform: translate(var(--p2-x), var(--p2-y)) rotate(var(--p2-r)) scale(1.1) !important;
+      filter: brightness(1.3) drop-shadow(0 0 15px #7b4db9);
+    }
 
-        .social-btn i {
-            font-size: 1.3rem;
-            color: #ffb3d0;
-        }
+    .btn-3 {
+      background-image: url('https://i.imgur.com/x1O9qqX.png');
+    }
 
-        .social-btn:hover {
-            background: rgba(255, 180, 210, 0.2);
-            border-color: #ff99cc;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 18px rgba(255, 100, 150, 0.2);
-            color: white;
-        }
+    .kashima-container:hover .btn-3 {
+      transform: translate(var(--p3-x), var(--p3-y)) rotate(var(--p3-r)) scale(1);
+    }
 
-        .footer-note {
-            margin-top: 2.5rem;
-            text-align: center;
-            font-size: 0.7rem;
-            color: #b692ae;
-            border-top: 1px solid rgba(255, 160, 200, 0.3);
-            padding-top: 1.2rem;
-        }
+    .btn-3:hover {
+      transform: translate(var(--p3-x), var(--p3-y)) rotate(var(--p3-r)) scale(1.1) !important;
+      filter: brightness(1.3) drop-shadow(0 0 15px #7b4db9);
+    }
 
-        @media (max-width: 700px) {
-            body { padding: 1rem; }
-            .space-container { padding: 1.2rem; }
-            .title-info h1 { font-size: 2rem; }
-            .profile-header { justify-content: center; text-align: center; flex-direction: column; }
-            .social-btn { padding: 0.5rem 1rem; font-size: 0.85rem; }
-        }
-    </style>
+    .btn-4 {
+      background-image: url('https://i.imgur.com/xQ0zq6H.png');
+    }
+
+    .kashima-container:hover .btn-4 {
+      transform: translate(var(--p4-x), var(--p4-y)) rotate(var(--p4-r)) scale(1);
+    }
+
+    .btn-4:hover {
+      transform: translate(var(--p4-x), var(--p4-y)) rotate(var(--p4-r)) scale(1.1) !important;
+      filter: brightness(1.3) drop-shadow(0 0 15px #7b4db9);
+    }
+
+    .btn-5 {
+      background-image: url('https://i.imgur.com/kD1wnPn.png');
+    }
+
+    .kashima-container:hover .btn-5 {
+      transform: translate(var(--p5-x), var(--p5-y)) rotate(var(--p5-r)) scale(1);
+    }
+
+    .btn-5:hover {
+      transform: translate(var(--p5-x), var(--p5-y)) rotate(var(--p5-r)) scale(1.1) !important;
+      filter: brightness(1.3) drop-shadow(0 0 15px #7b4db9);
+    }
+
+    .btn-special {
+      width: var(--p6-width) !important;
+      height: var(--p6-height) !important;
+      background-color: #7b4db9 !important;
+      color: white !important;
+      border-radius: 8px;
+      font-weight: bold;
+      font-size: var(--p6-font-size);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid white !important;
+      z-index: 110 !important;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+      opacity: 0;
+      pointer-events: auto;
+    }
+
+    .kashima-container:hover .btn-special {
+      opacity: 1;
+      transform: translate(var(--p6-x), var(--p6-y)) rotate(var(--p6-r)) scale(1);
+    }
+
+    .btn-special:hover {
+      filter: brightness(1.4) !important;
+      transform: translate(var(--p6-x), var(--p6-y)) rotate(var(--p6-r)) scale(1.1) !important;
+      cursor: pointer;
+    }
+
+    .text-window {
+      position: absolute;
+      top: 50px;
+      left: 110%;
+      width: 450px;
+      height: 380px;
+      background: rgba(10, 10, 10, 0.96);
+      border: 2px solid #7b4db9;
+      border-radius: 15px;
+      z-index: 100;
+      padding: 20px;
+      display: none;
+      color: white;
+      box-shadow: 0 0 30px black;
+    }
+
+    #popupBody {
+      height: 90%;
+      margin-top: 15px;
+      overflow-y: auto;
+      padding-right: 5px;
+    }
+
+    #popupBody::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    #popupBody::-webkit-scrollbar-thumb {
+      background: #7b4db9;
+      border-radius: 10px;
+    }
+
+    .image-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+      display: none;
+    }
+
+    .gallery-item {
+      text-align: center;
+      background: rgba(255, 255, 255, 0.05);
+      padding: 10px;
+      border-radius: 10px;
+      border: 1px solid #7b4db9;
+    }
+
+    .gallery-item img {
+      width: 100%;
+      height: auto;
+      object-fit: contain;
+      border-radius: 5px;
+      margin-bottom: 8px;
+    }
+
+    .gallery-item p {
+      margin: 0;
+      font-size: 13px;
+      color: #ddd;
+      line-height: 1.2;
+    }
+
+    #popupText {
+      width: 100%;
+      height: 90%;
+      background: transparent;
+      border: none;
+      color: white;
+      outline: none;
+      font-size: 16px;
+      resize: none;
+      display: none;
+    }
+
+    /* REPRODUCTOR REPOSICIONADO: debajo de la imagen derecha */
+    .music-player-container {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background: rgba(0, 0, 0, 0.8);
+      padding: 10px;
+      border-radius: 50px;
+      box-shadow: 0 0 15px rgba(0, 0, 0, 0.5);
+      width: fit-content;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    audio {
+      height: 30px;
+      filter: invert(36%) sepia(88%) saturate(913%) hue-rotate(227deg) brightness(87%) contrast(87%);
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 15px;
+      cursor: pointer;
+      color: #7b4db9;
+      font-size: 24px;
+    }
+
+    .cloud-rotator {
+      position: absolute;
+      z-index: 5;
+      pointer-events: none;
+    }
+
+    .rot-cw {
+      animation: rotateSimpleCW 30s linear infinite;
+    }
+
+    .rot-ccw {
+      animation: rotateSimpleCCW 35s linear infinite;
+    }
+
+    .pulse {
+      animation: pulseA 2s ease-in-out infinite;
+      width: 640px;
+      opacity: 0.9;
+    }
+
+    .circle-layer {
+      position: absolute;
+      z-index: 10;
+      width: 550px;
+      animation: rotateSimpleCW 1s linear infinite;
+      pointer-events: none;
+    }
+
+    .img-front {
+      position: absolute;
+      z-index: 30;
+      width: 600px;
+      pointer-events: none;
+    }
+
+    .img-right {
+      width: 550px;
+      height: auto;
+      display: block;
+    }
+
+    @keyframes pulseA {
+
+      0%,
+      100% {
+        transform: scale(0.8);
+      }
+
+      50% {
+        transform: scale(1.1);
+      }
+    }
+
+    @keyframes rotateSimpleCW {
+      from {
+        transform: rotate(0deg);
+      }
+
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes rotateSimpleCCW {
+      from {
+        transform: rotate(360deg);
+      }
+
+      to {
+        transform: rotate(0deg);
+      }
+    }
+
+    @keyframes moveOblique {
+      from {
+        background-position: 0 0;
+      }
+
+      to {
+        background-position: 1000px 1000px;
+      }
+    }
+
+    /* Ajuste para que el contenedor de la imagen derecha también agrupe el reproductor */
+    .new-image-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+  </style>
 </head>
-<body>
-<div class="space-container">
-    <!-- CABECERA CON AVATAR Y NOMBRE DEGRADADO -->
-    <div class="profile-header">
-        <div class="avatar-frame">
-            
-            <img src="https://xatimg.com/image/2itafBilcutf.gif" alt="MashaDoll">
+
+<body onclick="startAudio()">
+  <div class="animated-background"></div>
+
+  <div class="main-wrapper">
+    <div class="kashima-container">
+      <div class="buttons-layer">
+        <button class="nav-button btn-1" onclick="openWindow('The Klin', 'forno')"></button>
+        <button class="nav-button btn-2" onclick="openWindow('Jewels', 'gioielli')"></button>
+        <button class="nav-button btn-3" onclick="openWindow('Masks', 'maschere')"></button>
+        <button class="nav-button btn-4" onclick="openWindow('Incense', 'incensi')"></button>
+        <button class="nav-button btn-5" onclick="openWindow('Rituals', 'rituali')"></button>
+        <button class="nav-button btn-special" onclick="openWindow('Limited', 'altre_offerte')">LIMITED</button>
+      </div>
+
+      <div id="popupWindow" class="text-window">
+        <span class="close-btn" onclick="closeWindow()">&times;</span>
+        <h3 id="popupTitle" style="margin:0; color:#7b4db9; border-bottom: 1px solid #7b4db9;">TITOLO</h3>
+        <div id="popupBody">
+          <div id="imageGrid" class="image-grid"></div>
+          <textarea id="popupText" placeholder="coming soon..."></textarea>
         </div>
-        <div class="title-info">
-            <h1>𝑴𝒂𝒔𝒉𝒂𝒅𝒐𝒍𝒍</h1>
-            <div class="subtle-badge">
-                <i class="fas fa-heart"></i> Marie Joliet · Wiz/Marita
-            </div>
-        </div>
-    </div>
+      </div>
 
-       <div class="hero-image">
-               <img src="https://xatimg.com/image/GSBQsa6WQSZL.png" alt="MashaDollk space card">
-        <!-- Si aún no la tienes online, súbela a Imgur o a GitHub y pega el enlace aquí -->
+      <div class="cloud-rotator rot-cw"><img src="https://xatimg.com/image/K3WCfRZ4rb0k.png" class="pulse"></div>
+      <div class="cloud-rotator rot-ccw"><img src="https://xatimg.com/image/Dv4Y4bNjNWnY.png" class="pulse"></div>
+      <img src="https://xatimg.com/image/PznN7Stpz8yh.png" class="circle-layer">
+      <img src="https://xatimg.com/image/7pygkjSxrcQ1.png" class="img-front">
     </div>
-
-    <!-- REDES SOCIALES -->
-    <div class="social-section">
-        <h3><i class="fas fa-heart"></i> SIGUEME EN LAS REDES :v <i class="fas fa-heart"></i></h3>
-        <div class="social-buttons">
-            <a href="#" class="social-btn"><i class="fab fa-instagram"></i> Instagram</a>
-            <a href="#" class="social-btn"><i class="fab fa-twitter"></i> X</a>
-            <a href="#" class="social-btn"><i class="fab fa-tiktok"></i> TikTok</a>
-            <a href="#" class="social-btn"><i class="fab fa-discord"></i> Discord</a>
-            <a href="#" class="social-btn"><i class="fab fa-youtube"></i> YouTube</a>
-            <a href="#" class="social-btn"><i class="fab fa-github"></i> GitHub</a>
-        </div>
+    <div class="new-image-container">
+      <img src="https://xatimg.com/image/L8bLBDbccdhP.png" class="img-right">
+      <!-- Reproductor reposicionado justo debajo de la imagen derecha -->
+      <div class="music-player-container">
+        <audio id="myAudio" controls loop autoplay>
+          <source src="https://dl.dropboxusercontent.com/s/tvbtrr7znqx4fs1kuwtbo/fg.mp3?rlkey=mcyw4u3m77q03r66f0skcft12&st=nt5ggboq&dl=0.mp3" type="audio/mpeg">
+        </audio>
+      </div>
     </div>
+  </div>
 
-    <div class="footer-note">
-        TEXTO DE RELLENO QUE VIVA EL ROCK PUTOS
-    </div>
-</div>
+  <script>
+    const galleryData = {
+      'forno': [{
+          img: 'https://i.imgur.com/uie0DYt.png',
+          text: 'Chōchin-obake - 60¥'
+        },
+        {
+          img: 'https://i.imgur.com/sr5Nzcl.png',
+          text: 'Dōsojin - 60¥'
+        },
+        {
+          img: 'https://i.imgur.com/0fXRCH0.png',
+          text: 'Chōchin-obake - 120¥'
+        },
+        {
+          img: 'https://i.imgur.com/rtSTqzj.png',
+          text: 'Chōchin-obake - 40¥'
+        },
+        {
+          img: 'https://i.imgur.com/O0yCy9X.png',
+          text: 'Chōchin-obake - 110¥'
+        },
+        {
+          img: 'https://i.imgur.com/yKN2lyz.png',
+          text: 'Chōchin-obake - 70¥'
+        },
+        {
+          img: 'https://i.imgur.com/EK9V7kO.png',
+          text: 'Chōchin-obake - 40¥'
+        },
+        {
+          img: 'https://i.imgur.com/5L9fq0J.png',
+          text: 'Chōchin-obake - 90¥'
+        },
+        {
+          img: 'https://i.imgur.com/l5Q9uNl.png',
+          text: 'Chōchin-obake - 40¥'
+        },
+        {
+          img: 'https://i.imgur.com/HNcVotM.png',
+          text: 'Chōchin-obake - 40¥'
+        },
+        {
+          img: 'https://i.imgur.com/FZaXsV4.png',
+          text: 'Chōchin-obake - 140¥'
+        },
+        {
+          img: 'https://i.imgur.com/egkJ76A.png',
+          text: 'Chōchin-obake - 50¥'
+        },
+        {
+          img: 'https://i.imgur.com/p5EomPD.png',
+          text: 'Chōchin-obake - 50¥'
+        }
+      ],
+      'gioielli': [{
+          img: 'https://i.imgur.com/uEBhSVW.png',
+          text: 'Pendaglio - 50¥'
+        },
+        {
+          img: 'https://i.imgur.com/dKqQC2f.png',
+          text: 'Bracciale - 80¥'
+        },
+        {
+          img: 'https://i.imgur.com/PZUeDuD.png',
+          text: 'Perla 01 - 50¥'
+        },
+        {
+          img: 'https://i.imgur.com/rdrh4Cg.png',
+          text: 'Perla 02 - 20¥'
+        },
+        {
+          img: 'https://i.imgur.com/ssNcCGI.png',
+          text: 'Perla 03 - 20¥'
+        },
+        {
+          img: 'https://i.imgur.com/dI6CIOx.png',
+          text: 'Perla 04 - 20¥'
+        },
+        {
+          img: 'https://i.imgur.com/EK9V7kO.png',
+          text: 'Perla 05 - 20¥'
+        },
+        {
+          img: 'https://i.imgur.com/fFZGbHJ.png',
+          text: 'Perla 06 - 20¥'
+        },
+        {
+          img: 'https://i.imgur.com/rh6jqSv.png',
+          text: 'Perla 07 - 20¥'
+        },
+        {
+          img: 'https://i.imgur.com/NUABGyH.png',
+          text: 'Perla 08 - 20¥'
+        },
+        {
+          img: 'https://i.imgur.com/aQUFimv.png',
+          text: 'Perla 09 - 20¥'
+        },
+        {
+          img: 'https://i.imgur.com/PHj6Z3Q.png',
+          text: 'Perla 10 - 20¥'
+        },
+      ],
+      'maschere': [{
+          img: 'https://i.imgur.com/azpsGoK.png',
+          text: 'Maschera Kitsune - 200¥'
+        },
+        {
+          img: 'https://i.imgur.com/mL3Jbv8.png',
+          text: 'Maschera Oni - 250¥'
+        },
+        {
+          img: 'https://i.imgur.com/Ve30zuN.png',
+          text: 'Maschera Kitsune - 200¥'
+        },
+        {
+          img: 'https://i.imgur.com/LFOs9Dj.png',
+          text: 'Maschera Kitsune - 200¥'
+        },
+        {
+          img: 'https://i.imgur.com/9a7uVdP.png',
+          text: 'Maschera Kitsune - 200¥'
+        },
+        {
+          img: 'https://i.imgur.com/StlbM6Z.png',
+          text: 'Maschera Kitsune - 200¥'
+        },
+        {
+          img: 'https://i.imgur.com/l5I2UNL.png',
+          text: 'Maschera Kitsune - 200¥'
+        },
+        {
+          img: 'https://i.imgur.com/JPKS6EQ.png',
+          text: 'Maschera Kitsune - 200¥'
+        },
+        {
+          img: 'https://i.imgur.com/4tV6ZQ8.png',
+          text: 'Maschera Kitsune - 200¥'
+        },
+        {
+          img: 'https://i.imgur.com/V4QR46D.png',
+          text: 'Maschera Kitsune - 200¥'
+        },
+      ],
+      'incensi': [{
+          img: 'https://i.imgur.com/qDm4na0.png',
+          text: 'Incenso Bosco - 40¥'
+        },
+        {
+          img: 'https://i.imgur.com/r1R6SLG.png',
+          text: 'Incenso Luna - 35¥'
+        },
+        {
+          img: 'https://i.imgur.com/Jh2Q3kv.png',
+          text: 'Incenso Nebbia - 30¥'
+        },
+        {
+          img: 'https://i.imgur.com/PgtspF6.png',
+          text: 'Incenso Terra - 30¥'
+        },
+        {
+          img: 'https://i.imgur.com/6kwiVU1.png',
+          text: 'Incenso Cenere - 42¥'
+        },
+      ],
+      'altre_offerte': [{
+          img: 'https://i.imgur.com/lWbeAMh.png',
+          text: 'Uwabami - 200¥'
+        },
+        {
+          img: 'https://i.imgur.com/UJlJTyn.png',
+          text: 'Tsuki no Usagi - 210¥'
+        },
+        {
+          img: 'https://i.imgur.com/4zKFMi1.png',
+          text: 'Tori - 210¥'
+        },
+        {
+          img: 'https://i.imgur.com/efRvBVv.png',
+          text: 'Tora - 210¥'
+        }
+      ]
+    };
 
-<script>
-    // pequeño detalle: actualizar año o simplemente mantener la elegancia
-    console.log("space rosado refinado");
-</script>
+    function startAudio() {
+      var audio = document.getElementById("myAudio");
+      if (audio && audio.paused) {
+        audio.play().catch(() => {});
+      }
+    }
+
+    function openWindow(title, type) {
+      const windowEl = document.getElementById('popupWindow');
+      const imageGrid = document.getElementById('imageGrid');
+      const popupText = document.getElementById('popupText');
+      windowEl.style.display = 'block';
+      document.getElementById('popupTitle').innerText = title;
+      if (type === 'rituali') {
+        imageGrid.style.display = 'none';
+        popupText.style.display = 'block';
+      } else {
+        imageGrid.style.display = 'grid';
+        popupText.style.display = 'none';
+        const items = galleryData[type] || [];
+        imageGrid.innerHTML = '';
+        items.forEach(item => {
+          const div = document.createElement('div');
+          div.className = 'gallery-item';
+          div.innerHTML = `<img src="${item.img}"><p>${item.text}</p>`;
+          imageGrid.appendChild(div);
+        });
+      }
+    }
+
+    function closeWindow() {
+      document.getElementById('popupWindow').style.display = 'none';
+    }
+  </script>
 </body>
+
 </html>
