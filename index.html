@@ -163,7 +163,7 @@
     }
 
     .btn-5 {
-      background-image: url('https://i.imgur.com/kD1wnPn.png');
+      background-image: url('https://xatimg.com/image/6pnALRxwrHpz.png');
     }
 
     .kashima-container:hover .btn-5 {
@@ -278,7 +278,7 @@
       display: none;
     }
 
-    /* Estilo especial para la sección "My" (cuadro centrado) */
+    /* Estilo especial para la sección "My" y "Demos" (cuadro centrado) */
     .single-profile {
       display: flex;
       flex-direction: column;
@@ -286,8 +286,10 @@
       justify-content: center;
       height: 100%;
       text-align: center;
-      overflow: hidden; /* Evita scroll interno */
+      overflow: hidden;
+      /* Evita scroll interno */
     }
+
     /* Imagen más grande, ajustada al alto del contenedor */
     .single-profile img {
       max-height: 100%;
@@ -299,18 +301,20 @@
       border: 2px solid #7b4db9;
       box-shadow: 0 0 15px rgba(123, 77, 185, 0.5);
     }
+
     /* Descripción solo se muestra si tiene texto */
     .single-profile .description {
       font-size: 15px;
       line-height: 1.5;
       color: #f0f0f0;
-      background: rgba(0,0,0,0.5);
+      background: rgba(0, 0, 0, 0.5);
       padding: 12px 20px;
       border-radius: 20px;
       max-width: 90%;
       white-space: pre-line;
       margin-top: 15px;
     }
+
     .single-profile .description strong {
       color: #7b4db9;
     }
@@ -444,10 +448,10 @@
       <div class="buttons-layer">
         <button class="nav-button btn-1" onclick="openWindow('My', 'forno')"></button>
         <button class="nav-button btn-2" onclick="openWindow('Friends', 'gioielli')"></button>
-        <button class="nav-button btn-3" onclick="openWindow('Works', 'maschere')"></button>
+        <button class="nav-button btn-3" onclick="openWindow('Mis trabajos solicitados', 'maschere')"></button>
         <button class="nav-button btn-4" onclick="openWindow('Demos', 'incensi')"></button>
-        <button class="nav-button btn-5" onclick="openWindow('Rituals', 'rituali')"></button>
-        <button class="nav-button btn-special" onclick="openWindow('♪', 'altre_offerte')">LIMITED</button>
+        <button class="nav-button btn-5" onclick="openWindow('Soon', 'rituali')"></button>
+        <button class="nav-button btn-special" onclick="openWindow('♪', 'altre_offerte')">♡</button>
       </div>
 
       <div id="popupWindow" class="text-window">
@@ -642,20 +646,20 @@
         },
       ],
       'altre_offerte': [{
-          img: 'https://i.imgur.com/lWbeAMh.png',
-          text: 'Uwabami - 200¥'
+          img: 'https://xatimg.com/image/AM2O9rVUIxYF.jpg',
+          text: ''
         },
         {
-          img: 'https://i.imgur.com/UJlJTyn.png',
-          text: 'Tsuki no Usagi - 210¥'
+          img: 'https://xatimg.com/image/SdJSQZ9qvlf6.jpg',
+          text: ''
         },
         {
-          img: 'https://i.imgur.com/4zKFMi1.png',
-          text: 'Tori - 210¥'
+          img: 'https://xatimg.com/image/H2PkQhQNmKce.jpg',
+          text: ''
         },
         {
-          img: 'https://i.imgur.com/efRvBVv.png',
-          text: 'Tora - 210¥'
+          img: 'https://xatimg.com/image/a5nrr4A6jkSY.jpg',
+          text: ''
         }
       ]
     };
@@ -687,13 +691,11 @@
         return;
       }
       
-      // Para todos los demás casos, mostramos la cuadrícula de imágenes
-      imageGrid.style.display = 'grid';
-      popupText.style.display = 'none';
-      
-      // MODIFICACIÓN PARA "My" (forno): mostramos un diseño centrado especial SIN SCROLL
-      if (type === 'forno') {
-        // Desactivar scroll en el popupBody para que la imagen ocupe todo sin barras
+      // CASO ESPECIAL: "My" (forno) y "Demos" (incensi): mostrar solo una imagen, sin scroll
+      if (type === 'forno' || type === 'incensi') {
+        imageGrid.style.display = 'grid';
+        popupText.style.display = 'none';
+        // Desactivar scroll para que la imagen ocupe todo sin barras
         popupBody.style.overflowY = 'hidden';
         
         // Limpiamos el grid y mostramos el contenido personalizado
@@ -701,27 +703,18 @@
         // Creamos un contenedor especial
         const specialDiv = document.createElement('div');
         specialDiv.className = 'single-profile';
-        // Usamos la misma imagen de Marie (la primera del array)
-        const marieImg = galleryData['forno'][0].img;
-        // Texto descriptivo (vacío, no se muestra)
-        const descriptionText = ``; // Se mantiene vacío para que no aparezca texto adicional
-        
-        // Solo añadimos la imagen, sin el div de descripción si está vacío
-        if (descriptionText.trim() === '') {
-          specialDiv.innerHTML = `<img src="${marieImg}" alt="Marie">`;
-        } else {
-          specialDiv.innerHTML = `
-            <img src="${marieImg}" alt="Marie">
-            <div class="description">${descriptionText.replace(/\n/g, '<br>')}</div>
-          `;
-        }
-        imageGrid.appendChild(specialDiv);
-        // Aseguramos que se vea como bloque flexible (el grid sigue siendo grid, pero este div abarca ambas columnas)
+        // Usamos la primera imagen del array correspondiente
+        const firstImg = galleryData[type][0].img;
+        // No mostramos ningún texto (descripción vacía)
+        specialDiv.innerHTML = `<img src="${firstImg}" alt="${title}">`;
         specialDiv.style.gridColumn = '1 / -1';
+        imageGrid.appendChild(specialDiv);
         return;
       }
       
-      // Resto de galerías (gioielli, maschere, incensi, altre_offerte) con scroll normal
+      // Resto de galerías (gioielli, maschere, altre_offerte) con scroll normal
+      imageGrid.style.display = 'grid';
+      popupText.style.display = 'none';
       let items = galleryData[type] || [];
       imageGrid.innerHTML = '';
       items.forEach(item => {
