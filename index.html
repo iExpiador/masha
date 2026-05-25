@@ -286,16 +286,20 @@
       justify-content: center;
       height: 100%;
       text-align: center;
+      overflow: hidden; /* Evita scroll interno */
     }
-    /* --- IMAGEN MÁS GRANDE SOLO PARA "MY" (MARIE) --- */
+    /* Imagen más grande, ajustada al alto del contenedor */
     .single-profile img {
-      max-width: 320px;     /* Aumentado desde 250px para que sea un poco más grande */
-      width: 90%;           /* Porcentaje fluido, mantiene responsividad */
+      max-height: 100%;
+      max-width: 100%;
+      width: auto;
+      height: auto;
+      object-fit: contain;
       border-radius: 12px;
-      margin-bottom: 20px;
       border: 2px solid #7b4db9;
       box-shadow: 0 0 15px rgba(123, 77, 185, 0.5);
     }
+    /* Descripción solo se muestra si tiene texto */
     .single-profile .description {
       font-size: 15px;
       line-height: 1.5;
@@ -305,6 +309,7 @@
       border-radius: 20px;
       max-width: 90%;
       white-space: pre-line;
+      margin-top: 15px;
     }
     .single-profile .description strong {
       color: #7b4db9;
@@ -473,7 +478,7 @@
   <script>
     const galleryData = {
       'forno': [{
-          img: 'https://xatimg.com/image/bkhKmAkcBjpQ.png',
+          img: 'https://xatimg.com/image/rcOITYbfL9i2.png',
           text: 'Marie'
         },
         {
@@ -666,8 +671,13 @@
       const windowEl = document.getElementById('popupWindow');
       const imageGrid = document.getElementById('imageGrid');
       const popupText = document.getElementById('popupText');
+      const popupBody = document.getElementById('popupBody');
+      
       windowEl.style.display = 'block';
       document.getElementById('popupTitle').innerText = title;
+      
+      // Resetear overflow del body a auto por defecto (para galerías normales)
+      popupBody.style.overflowY = 'auto';
       
       // CASO ESPECIAL: Rituals (textarea)
       if (type === 'rituali') {
@@ -681,8 +691,11 @@
       imageGrid.style.display = 'grid';
       popupText.style.display = 'none';
       
-      // MODIFICACIÓN PARA "My" (forno): mostramos un diseño centrado especial
+      // MODIFICACIÓN PARA "My" (forno): mostramos un diseño centrado especial SIN SCROLL
       if (type === 'forno') {
+        // Desactivar scroll en el popupBody para que la imagen ocupe todo sin barras
+        popupBody.style.overflowY = 'hidden';
+        
         // Limpiamos el grid y mostramos el contenido personalizado
         imageGrid.innerHTML = '';
         // Creamos un contenedor especial
@@ -690,21 +703,25 @@
         specialDiv.className = 'single-profile';
         // Usamos la misma imagen de Marie (la primera del array)
         const marieImg = galleryData['forno'][0].img;
-        // Texto descriptivo según la imagen proporcionada por el usuario (vacío, sin añadir texto)
-        const descriptionText = ``;
-        specialDiv.innerHTML = `
-  <img src="${marieImg}" alt="Marie">
-  <div class="description">
-    ${descriptionText.replace(/\n/g, '<br>')}
-  </div>
-`;
+        // Texto descriptivo (vacío, no se muestra)
+        const descriptionText = ``; // Se mantiene vacío para que no aparezca texto adicional
+        
+        // Solo añadimos la imagen, sin el div de descripción si está vacío
+        if (descriptionText.trim() === '') {
+          specialDiv.innerHTML = `<img src="${marieImg}" alt="Marie">`;
+        } else {
+          specialDiv.innerHTML = `
+            <img src="${marieImg}" alt="Marie">
+            <div class="description">${descriptionText.replace(/\n/g, '<br>')}</div>
+          `;
+        }
         imageGrid.appendChild(specialDiv);
         // Aseguramos que se vea como bloque flexible (el grid sigue siendo grid, pero este div abarca ambas columnas)
         specialDiv.style.gridColumn = '1 / -1';
         return;
       }
       
-      // Resto de galerías (gioielli, maschere, incensi, altre_offerte)
+      // Resto de galerías (gioielli, maschere, incensi, altre_offerte) con scroll normal
       let items = galleryData[type] || [];
       imageGrid.innerHTML = '';
       items.forEach(item => {
@@ -716,6 +733,9 @@
     }
 
     function closeWindow() {
+      const popupBody = document.getElementById('popupBody');
+      // Restaurar overflow a auto al cerrar para que otras galerías funcionen bien
+      popupBody.style.overflowY = 'auto';
       document.getElementById('popupWindow').style.display = 'none';
     }
   </script>
