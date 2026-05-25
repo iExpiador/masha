@@ -732,6 +732,131 @@
       document.getElementById('popupWindow').style.display = 'none';
     }
   </script>
+  <script>
+(function(){
+
+    // --- 1. DESACTIVAR CLIC DERECHO (Menú contextual) ---
+    // Previene que aparezca el menú al hacer clic derecho.
+    document.addEventListener('contextmenu', function(event) {
+        event.preventDefault();
+        // (Opcional) Puedes mostrar un mensaje de alerta:
+        // alert("El menú contextual está deshabilitado.");
+        return false;
+    });
+
+    // --- 2. BLOQUEAR COMBINACIONES DE TECLADO (Ctrl+U, F12, etc.) ---
+    // Lista de combinaciones de teclas a bloquear.
+    // Los códigos de tecla pueden variar, por eso incluimos varias opciones para la misma acción.
+    const forbiddenKeys = [
+        { code: 'KeyU', ctrlKey: true },                     // Ctrl + U (Ver código fuente)
+        { key: 'u', ctrlKey: true },                         // Ctrl + U (alternativa)
+        { code: 'F12', preventDefault: true },               // F12 (Abrir DevTools)
+        { code: 'KeyI', ctrlKey: true, shiftKey: true },     // Ctrl + Shift + I (Abrir Inspector)
+        { key: 'I', ctrlKey: true, shiftKey: true },         // Ctrl + Shift + I (alternativa)
+        { code: 'KeyJ', ctrlKey: true, shiftKey: true },     // Ctrl + Shift + J (Abrir Consola)
+        { key: 'J', ctrlKey: true, shiftKey: true },         // Ctrl + Shift + J (alternativa)
+        { code: 'KeyC', ctrlKey: true, shiftKey: true },     // Ctrl + Shift + C (Inspeccionar elemento)
+        { code: 'KeyS', ctrlKey: true },                     // Ctrl + S (Guardar página)
+        { key: 's', ctrlKey: true },                         // Ctrl + S (alternativa)
+    ];
+
+    window.addEventListener('keydown', function(event) {
+        for (let key of forbiddenKeys) {
+            let isMatch = true;
+            if (key.code) isMatch = isMatch && (event.code === key.code);
+            if (key.key) isMatch = isMatch && (event.key === key.key);
+            if (key.ctrlKey !== undefined) isMatch = isMatch && (event.ctrlKey === key.ctrlKey);
+            if (key.shiftKey !== undefined) isMatch = isMatch && (event.shiftKey === key.shiftKey);
+            if (key.altKey !== undefined) isMatch = isMatch && (event.altKey === key.altKey);
+
+            if (isMatch) {
+                event.preventDefault();
+                // (Opcional) Puedes mostrar un mensaje de alerta:
+                // alert("Esta combinación de teclas está deshabilitada.");
+                return false;
+            }
+        }
+    });
+
+    // --- 3. DETECTAR Y REACCIONAR ANTE LA APERTURA DE DEVTOOLS ---
+    // Crea una función que se ejecutará si se detecta que las DevTools están abiertas.
+    function handleDevToolsOpen() {
+        // Puedes personalizar esta acción. Por ejemplo, limpiar el contenido de la página:
+        // document.body.innerHTML = "<h1>Acceso no permitido</h1>";
+        // O redirigir a otra página:
+        // window.location.href = "/acceso-denegado";
+        console.warn("¡Se detectó la apertura de las herramientas de desarrollo!");
+    }
+
+    // Método 1: Usando debugger (diferencia de tiempo)
+    // Si las DevTools están abiertas, el debugger pausa la ejecución y la medición de tiempo será mayor.
+    setInterval(function() {
+        const start = performance.now();
+        debugger; // La ejecución se pausa aquí si DevTools está abierto.
+        const duration = performance.now() - start;
+        if (duration > 100) {
+            handleDevToolsOpen();
+        }
+    }, 1000);
+
+    // Método 2: Usando un objeto en console.log (efectivo en Chrome)
+    // Se crea un objeto con un "trampa" que se activa cuando DevTools intenta mostrarlo.
+    let devToolsDetectionElement = new Image();
+    Object.defineProperty(devToolsDetectionElement, 'id', {
+        get: function() {
+            handleDevToolsOpen();
+            return 'detected';
+        }
+    });
+    setInterval(function() {
+        console.log(devToolsDetectionElement);
+        console.clear(); // Limpia la consola para ocultar la evidencia de la prueba.
+    }, 2000);
+
+    // --- 4. PROTECCIÓN ADICIONAL PARA IMÁGENES ---
+    // Añade el atributo 'draggable="false"' a todas las imágenes existentes y futuras.
+    function protectImages() {
+        document.querySelectorAll('img').forEach(img => {
+            img.setAttribute('draggable', 'false');
+            // También puedes añadir estilos CSS para evitar la selección.
+            img.style.userSelect = 'none';
+            img.style.webkitUserSelect = 'none';
+            img.style.pointerEvents = 'auto'; // Importante: no deshabilitar los clics si no es necesario.
+        });
+    }
+    // Ejecutar la función cuando el DOM esté listo.
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', protectImages);
+    } else {
+        protectImages();
+    }
+    // Usar un MutationObserver para proteger imágenes que se añadan dinámicamente después.
+    const observer = new MutationObserver(function(mutations) {
+        mutations.forEach(function(mutation) {
+            if (mutation.type === 'childList') {
+                protectImages();
+            }
+        });
+    });
+    observer.observe(document.body, { childList: true, subtree: true });
+
+    // Estilo CSS global para evitar la selección de texto en toda la página.
+    const style = document.createElement('style');
+    style.textContent = `
+        body {
+            user-select: none; /* Evita seleccionar texto */
+            -webkit-user-select: none;
+            -moz-user-select: none;
+        }
+        img {
+            pointer-events: auto; /* Asegura que las imágenes sigan siendo cliqueables */
+            -webkit-touch-callout: none; /* Evita el menú en iOS */
+        }
+    `;
+    document.head.appendChild(style);
+
+})();
+</script>
 </body>
 
 </html>
